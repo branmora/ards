@@ -14,8 +14,8 @@ library(shinymanager)
 
 # define some credentials
 credentials <- data.frame(
-  user = "usuariomclcp", # mandatory
-  password = "04202107", # mandatory
+  user = "admin", # mandatory
+  password = "admin", # mandatory
   start = "2019-04-15", # optinal (all others)
   expire = NA,
   admin = FALSE,
@@ -33,14 +33,14 @@ set_labels(
 )
 
 # download data.table
-table_recibidos <-fread('https://raw.githubusercontent.com/geresacusco/repositorio/master/tabla_recibidos.csv', sep = ";", header = TRUE)
-table_emitidos_multiple <-fread('https://raw.githubusercontent.com/geresacusco/repositorio/master/tabla_emitidos_multiples.csv', sep = ";")
-table_emitidos <-fread('https://raw.githubusercontent.com/geresacusco/repositorio/master/tabla_emitidos.csv', sep = ";")
-table_otros <-fread('https://raw.githubusercontent.com/geresacusco/repositorio/master/tabla_otros.csv', sep = ";")
+# table_recibidos <-fread('https://raw.githubusercontent.com/geresacusco/repositorio/master/tabla_recibidos.csv', sep = ";", header = TRUE)
+# table_emitidos_multiple <-fread('https://raw.githubusercontent.com/geresacusco/repositorio/master/tabla_emitidos_multiples.csv', sep = ";")
+# table_emitidos <-fread('https://raw.githubusercontent.com/geresacusco/repositorio/master/tabla_emitidos.csv', sep = ";")
+# table_otros <-fread('https://raw.githubusercontent.com/geresacusco/repositorio/master/tabla_otros.csv', sep = ";")
 
 
 
-table_espacios <- fread()
+table_espacios <- fread("https://raw.githubusercontent.com/branmora/ards/main/data/ep.csv", sep = ";")
 
 
 #load helper scripts
@@ -86,10 +86,10 @@ ui <- fluidPage(
   shinyjs::hidden(eefHelp()),
   eefHeader("equality"),
   npfText("eef eef-main eef-summ"),
-  eefSection(NS("equality","NPF"),"Documentos recibidos",
+  eefSection(NS("equality","NPF"),"Espacios de concertación",
              colour="eef-section-links",
              class="eef-section eef eef-main eef-summ",
-             tabs = box( width = 12, DT::dataTableOutput("recibidos"))),
+             tabs = box( width = 12, DT::dataTableOutput("espacios"))),
   br(),
   eefSection(NS("equality","NPF"),"Documentos emitidos",
              colour="eef-section-links",
@@ -132,54 +132,67 @@ server <- function(input,output,session) {
   
 
   #tabla_espacios$
-   
-  table_recibidos$Descarga <- paste0("<a href='",table_recibidos$Descarga,"' target='_blank'>","Descarga","</a>")
   
-  output$recibidos = DT::renderDataTable({
-    datatable(table_recibidos, escape = FALSE,filter = 'top',
+  table_espacios$Descarga <- paste0("<a href='",table_espacios$Descarga,"' target='_blank'>","Descarga","</a>")
+  
+  
+  output$espacios = DT::renderDataTable({
+    datatable(table_espacios, escape = FALSE,filter = 'top',
               options = list(
                 language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
-                pageLength = 25,
-                searchHighlight = TRUE
-                ))
-  })
-  
-  table_emitidos$Descarga <- paste0("<a href='",table_emitidos$Descarga,"' target='_blank'>","Descarga","</a>")
-  
-  
-  output$emitidos = DT::renderDataTable({
-    datatable(table_emitidos, escape = FALSE,filter = 'top',
-              options = list(
-                language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
-                pageLength = 25,
+                pageLength = 10,
                 searchHighlight = TRUE
               ))
   })
+  
+  
+  # table_recibidos$Descarga <- paste0("<a href='",table_recibidos$Descarga,"' target='_blank'>","Descarga","</a>")
+  # 
+  # output$recibidos = DT::renderDataTable({
+  #   datatable(table_recibidos, escape = FALSE,filter = 'top',
+  #             options = list(
+  #               language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
+  #               pageLength = 25,
+  #               searchHighlight = TRUE
+  #               ))
+  # })
+  
+  # table_emitidos$Descarga <- paste0("<a href='",table_emitidos$Descarga,"' target='_blank'>","Descarga","</a>")
+  # 
+  # 
+  # output$emitidos = DT::renderDataTable({
+  #   datatable(table_emitidos, escape = FALSE,filter = 'top',
+  #             options = list(
+  #               language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
+  #               pageLength = 25,
+  #               searchHighlight = TRUE
+  #             ))
+  # })
 
-  table_emitidos_multiple$Descarga <- paste0("<a href='",table_emitidos_multiple$Descarga,"' target='_blank'>","Descarga","</a>")
-  
-  
-  output$emitidos_multiple = DT::renderDataTable({
-    datatable(table_emitidos_multiple, escape = FALSE,filter = 'top',
-              options = list(
-                language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
-                pageLength = 25,
-                searchHighlight = TRUE
-              ))
-  })
-  
+  # table_emitidos_multiple$Descarga <- paste0("<a href='",table_emitidos_multiple$Descarga,"' target='_blank'>","Descarga","</a>")
+  # 
+  # 
+  # output$emitidos_multiple = DT::renderDataTable({
+  #   datatable(table_emitidos_multiple, escape = FALSE,filter = 'top',
+  #             options = list(
+  #               language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
+  #               pageLength = 25,
+  #               searchHighlight = TRUE
+  #             ))
+  # })
+  # 
     
-  table_otros$Descarga <- paste0("<a href='",table_otros$Descarga,"' target='_blank'>","Descarga","</a>")
-  
-  
-  output$otros = DT::renderDataTable({
-    datatable(table_otros, escape = FALSE,filter = 'top',
-              options = list(
-                language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
-                pageLength = 25,
-                searchHighlight = TRUE
-              ))
-  })
+  # table_otros$Descarga <- paste0("<a href='",table_otros$Descarga,"' target='_blank'>","Descarga","</a>")
+  # 
+  # 
+  # output$otros = DT::renderDataTable({
+  #   datatable(table_otros, escape = FALSE,filter = 'top',
+  #             options = list(
+  #               language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
+  #               pageLength = 25,
+  #               searchHighlight = TRUE
+  #             ))
+  # })
   
  }
 
